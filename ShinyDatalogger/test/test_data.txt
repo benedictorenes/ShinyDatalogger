@@ -6,3 +6,5 @@ Time	Temperature
 5	23
 6	12
 7	23
+8	NA
+9	15

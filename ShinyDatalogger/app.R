@@ -42,9 +42,11 @@ fname = "test/test_data.txt"
 
 
 ui <- fluidPage(
-
-    # Application title
-    titlePanel("Data Logger for Arduino"),
+    tags$head(
+        tags$link(rel = "stylesheet", type = "text/css", href = "mystyle.css")
+    ),
+    tags$h1("Data Logger for Arduino"),
+    tags$hr(),
 
     # Sidebar with a slider input for number of bins 
     sidebarLayout(
@@ -68,14 +70,14 @@ server <- function(input, output) {
                                    readFunc = read.table,header = TRUE,sep = "")
     
     output$dataTable <- renderTable({
-        tail(fileData(),5)
+        tail(fileData(),10)
     })
     
     output$LogPlot <- renderPlot({
         # draw the plot
         ggplot(data = fileData(), aes(x=Time, y=Temperature)) +
-            geom_point(col = 2, pch = 20, size = 6) + 
-            geom_smooth() + 
+            geom_point(col = 2, pch = 18, size = 3) + 
+            geom_smooth(col = 3) + 
             theme_minimal() + 
             theme(plot.title = element_text(size=10)) + 
             ggtitle("Lab temperature") +
