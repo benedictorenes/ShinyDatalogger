@@ -17,7 +17,7 @@ myline = read.serialConnection(con)
 print(myline)
 
 
-stopTime <- Sys.time() + 50
+stopTime <- Sys.time() + 300
 foo <- ""
 textSize <- 0
 while(Sys.time() < stopTime)
@@ -30,8 +30,8 @@ while(Sys.time() < stopTime)
     temp = strsplit(mytext,",")[[1]][3]
     hum = strsplit(mytext,",")[[1]][4]
     temp_data = data.frame(tm,temp,hum)
-    
-    cat(c(tm,temp,hum),file="test/serial_data2.txt", sep = "\t", append=TRUE)
+    print(temp_data)
+    cat(c(tm,temp,hum),file="test/serial_data2.txt", sep = "\t", append=F)
     cat("",file="test/serial_data2.txt",sep = "\n",append = T)
   }
 }
