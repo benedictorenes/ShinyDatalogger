@@ -1,24 +1,30 @@
 library(serial)
+library(rstudioapi)
 
-
+print(getSourceEditorContext()$path)
 con_name = "cu.usbmodem1421"
-mainDir = "/Users/daniel/Documents/Barcelona/ShinyDatalogger/ShinyDatalogger"
 setwd(mainDir)
 
+# set logging default time to 1 day
+duration = 86400
+
+# create the serial connection 
 con <- serialConnection(name = "prueba",
                         port = con_name,
                         mode = "9600,n,8,1",
                         buffering = "none",
                         newline = TRUE,
                         translation = "cr")
-isOpen(con)
+
+# open the connection
 open(con)
-myline = read.serialConnection(con)
-print(myline)
+
+#myline = read.serialConnection(con)
+#print(myline)
 
 
-stopTime <- Sys.time() + 300
-foo <- ""
+stopTime = Sys.time() + duration
+
 textSize <- 0
 while(Sys.time() < stopTime)
 {

@@ -33,7 +33,6 @@ library(scales)
 ##########################################################################
 
 # Application
-mainDir = "/Users/daniel/Documents/Barcelona/ShinyDatalogger/ShinyDatalogger"
 fname = "test/serial_data2.txt"
 
 datiles = read.table(fname,header = F,sep = "\t",col.names = c("Time","Temperature","Humidity"),as.is = T)
@@ -52,12 +51,13 @@ ui <- fluidPage(
     tags$h1("Data Logger for Arduino"),
     tags$hr(),
 
-    # Sidebar with a slider input for number of bins 
+    # Sidebar: contains output table for the last incoming data and the save button
     sidebarLayout(
         sidebarPanel(
+            actionButton(inputId = "saveButton", label = "Save Log to file"),
+            tags$hr(),
             tableOutput(outputId = "dataTable"),
             width = 5
-            #actionButton(inputId = "updateButton", label = "Save Log to file")
         ),
 
         # Show a plot of the generated distribution
@@ -119,6 +119,11 @@ server <- function(input, output) {
             xlab("Time stamp") +
             scale_x_datetime(labels = date_format("%Y-%m-%d %H:%M:%S")) +
             ylim(lower_ylim(),higher_ylim())
+    })
+    
+    # when clicking on the save Log button, write a file with the logged data
+    observeEvent(input$saveButton,{
+        write.csv(myvals$log22,file = "log/sensor_log.csv")
     })
     
 }
