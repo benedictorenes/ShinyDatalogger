@@ -32,6 +32,9 @@ library(serial)
 
 # Application
 fname = "test/test_data.txt"
+fname = "test/serial_data2.txt"
+
+datiles = read.table(fname,header = F,sep = "\t",col.names = c("Time","Temperature","Humidity"))
 
 
 # ui: 
@@ -67,7 +70,8 @@ server <- function(input, output) {
     
     fileData <- reactiveFileReader(1000,  session = NULL,
                                    filePath =  fname, 
-                                   readFunc = read.table,header = TRUE,sep = "")
+                                   readFunc = read.table,
+                                   header = F,sep = "\t",col.names = c("Time","Temperature","Humidity"))
     
     output$dataTable <- renderTable({
         tail(fileData(),10)
