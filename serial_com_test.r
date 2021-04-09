@@ -1,7 +1,5 @@
 library(serial)
-library(rstudioapi)
 
-print(getSourceEditorContext()$path)
 con_name = "cu.usbmodem1421"
 setwd(mainDir)
 
@@ -18,10 +16,6 @@ con <- serialConnection(name = "prueba",
 
 # open the connection
 open(con)
-
-#myline = read.serialConnection(con)
-#print(myline)
-
 
 stopTime = Sys.time() + duration
 

@@ -1,15 +1,5 @@
-#
-# This is a Shiny web application. You can run the application by clicking
-# the 'Run App' button above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    http://shiny.rstudio.com/
-#
 library(shiny)
 library(tidyverse)
-library(dplyr)
-library(data.table)
 library(ggplot2)
 library(serial)
 library(scales)
@@ -17,25 +7,14 @@ library(scales)
 ##########################################################################
 ##########################################################################
 
-# The application will read a txt file and display a plot of the variables
-# The code will consist on two sections:
-#   - Serial communication for read and save the incoming data to a txt
-#   - Application: --> read txt --> plot output
-
-##########################################################################
-##########################################################################
-
-# Serial communication and writing log file
-
-
-
-##########################################################################
-##########################################################################
 
 # Application
+
+# file name to store serial print data
 fname = "test/serial_data2.txt"
 
-datiles = read.table(fname,header = F,sep = "\t",col.names = c("Time","Temperature","Humidity"),as.is = T)
+#datiles = read.table(fname,header = F,sep = "\t",col.names = c("Time","Temperature","Humidity"),as.is = T)
+
 # ui: 
 #   - Output plot 
 #   - Output table with the last values updating
@@ -60,7 +39,7 @@ ui <- fluidPage(
             width = 5
         ),
 
-        # Show a plot of the generated distribution
+        # Output plot
         mainPanel(
            plotOutput(outputId = "LogPlot"),
            width = 7
@@ -68,22 +47,27 @@ ui <- fluidPage(
     )
 )
 
-# Define server logic required to draw a histogram
+# Define server logic
 server <- function(input, output) {
+    
+    ########### Create and manipulate input data
     
     # create a log data frame inside a reactive wrapper
     myvals = reactiveValues(log22 = data.frame(Time = NULL,Temperature = NULL,Humidity = NULL))
     
-    #handy: reactive values for updating plot limits: lower_ylim, higher_ylim
+    #handy: reactive values ymin and ymax for updating plot limits. They will be wrapped
+    #   around reactives() lower_ylim, higher_ylim
     handy = reactiveValues(ymin = 10, ymax = 30)
     lower_ylim = reactive({handy$ymin = min(tail(myvals$log22$Temperature,10),na.rm = T)-5})
     higher_ylim = reactive({handy$ymax = max(tail(myvals$log22$Temperature,10),na.rm = T)+5})
+    
     
     # fileData() will update every time the log file has been modified
     fileData <- reactiveFileReader(1000,  session = NULL,
                                    filePath =  fname, 
                                    readFunc = read.table,
                                    header = F,sep = "\t",col.names = c("Time","Temperature","Humidity"),as.is = T)
+    
     
     # in order to store the data into the log22 dataframe, we need to isolate its call
     # newData gets the data from fileData()
@@ -99,6 +83,9 @@ server <- function(input, output) {
         }
         else{}
     })
+    
+    
+    ########## Output reactions that call inpput data
     
     # Table output with the last 6 values in the data frame
     output$dataTable <- renderTable({
@@ -123,7 +110,7 @@ server <- function(input, output) {
     
     # when clicking on the save Log button, write a file with the logged data
     observeEvent(input$saveButton,{
-        write.csv(myvals$log22,file = "log/sensor_log.csv")
+        write.csv(myvals$log22,file = paste0("log/sensor_log_",as.character(Sys.Date()),".csv"))
     })
     
 }
