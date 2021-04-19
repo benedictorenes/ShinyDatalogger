@@ -1,7 +1,7 @@
 library(serial)
 
 con_name = "cu.usbmodem1421"
-setwd(mainDir)
+#setwd(mainDir)
 
 # set logging default time to 1 day
 duration = 86400

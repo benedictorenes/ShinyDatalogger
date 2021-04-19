@@ -3,6 +3,9 @@ library(tidyverse)
 library(ggplot2)
 library(serial)
 library(scales)
+library(svglite)
+library(svgPanZoom)
+library(gridSVG)
 
 ##########################################################################
 ##########################################################################
@@ -41,6 +44,7 @@ ui <- fluidPage(
         # Output plot
         mainPanel(
            plotOutput(outputId = "LogPlot"),
+           tags$hr(),
            plotOutput(outputId = "LogPlot2"),
            width = 7
         )
@@ -111,8 +115,8 @@ server <- function(input, output) {
     ## second plot for the Humidity
     output$LogPlot2 <- renderPlot({
         # draw the plot
-        ggplot(data = tail(myvals$log22,N), aes(x=as.POSIXct(strptime(Time,format = "%Y-%m-%d %H:%M:%S")), y=Humidity)) +
-            geom_point(col = 2, pch = 18, size = 3) + 
+            ggplot(data = tail(myvals$log22,N), aes(x=as.POSIXct(strptime(Time,format = "%Y-%m-%d %H:%M:%S")), y=Humidity)) +
+            geom_point(col = 4, pch = 18, size = 3) + 
             geom_path()+
             theme_minimal() + 
             theme(plot.title = element_text(size=10)) + 
